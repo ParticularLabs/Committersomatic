@@ -1,14 +1,16 @@
 ﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Uranium.Console")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Uranium.Console")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCompany("NServiceBus Ltd.")]
+[assembly: AssemblyProduct("Uranium")]
+[assembly: AssemblyCopyright("Copyright 2015 NServiceBus. All rights reserved")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+[assembly: NeutralResourcesLanguage("en")]
 
 [assembly: ComVisible(false)]
 
