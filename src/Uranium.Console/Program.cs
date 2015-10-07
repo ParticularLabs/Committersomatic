@@ -20,7 +20,6 @@
         private static async Task MainAsync()
         {
             var organization = "Particular";
-            var contributorCount = 10;
 
             var credentials = new Credentials(
                 Environment.GetEnvironmentVariable("OCTOKIT_GITHUBUSERNAME"),
@@ -108,7 +107,6 @@
 
             using (var writer = new StreamWriter("matrix.txt", false))
             {
-
                 writer.Write("Login/Group");
                 foreach (var group in groupLoginContributions.Select(contribution => contribution.Group).Distinct())
                 {
@@ -128,7 +126,7 @@
 
                         writer.Write(
                             "\t" +
-                            (contribution == null ? "0" : contribution.Score.ToString(CultureInfo.InvariantCulture)));
+                            (contribution?.Score.ToString(CultureInfo.InvariantCulture) ?? "0"));
                     }
 
                     writer.WriteLine();
