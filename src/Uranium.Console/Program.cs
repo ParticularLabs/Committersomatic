@@ -7,8 +7,10 @@
     using System.Linq;
     using System.Threading.Tasks;
     using ColoredConsole;
+    using NodaTime;
     using Octokit;
     using Octokit.Internal;
+    using Uranium.Model.Octokit;
 
     internal static class Program
     {
@@ -54,6 +56,7 @@
 
             var groupLoginContributions = new List<Contribution>();
             var staff = await client.Organization.Member.GetAll(organization);
+            var commitService = new CommitService(client);
             foreach (var group in groups)
             {
                 ColorConsole.WriteLine();
@@ -65,10 +68,10 @@
                 {
                     ColorConsole.WriteLine("* ".White(), repo.Green());
 
-                    List<GitHubCommit> commits;
+                    IReadOnlyList<Model.Commit> commits;
                     try
                     {
-                        commits = (await client.Repository.Commits.GetAll(organization, repo)).ToList();
+                        commits = await commitService.Get(organization, repo);
                     }
                     catch (Exception ex)
                     {
@@ -84,19 +87,19 @@
 
                     foreach (var commit in commits
                         .Where(commit => commit.Committer != null)
-                        .Where(commit => staff.Any(member => member.Login == commit.Committer.Login)))
+                        .Where(commit => staff.Any(member => member.Login == commit.Committer)))
                     {
-                        var age = DateTime.UtcNow - commit.Commit.Committer.Date.UtcDateTime;
-                        var value = 1 / Math.Pow(2, 2 * age.TotalDays / 365.25d);
+                        var age = Period.Between(commit.Committed.LocalDateTime, OffsetDateTime.FromDateTimeOffset(DateTimeOffset.UtcNow).LocalDateTime);
+                        var value = 1 / Math.Pow(2, 2 * age.Days / 365.25d);
 
                         double sum;
-                        if (!contributions.TryGetValue(commit.Committer.Login, out sum))
+                        if (!contributions.TryGetValue(commit.Committer, out sum))
                         {
-                            contributions.Add(commit.Committer.Login, value);
+                            contributions.Add(commit.Committer, value);
                         }
                         else
                         {
-                            contributions[commit.Committer.Login] = sum + value;
+                            contributions[commit.Committer] = sum + value;
                         }
                     }
                 }

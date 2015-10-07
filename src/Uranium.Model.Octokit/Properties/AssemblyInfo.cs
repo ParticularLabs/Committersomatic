@@ -1,4 +1,4 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("Uranium.Console")]
+[assembly: AssemblyTitle("Uranium.Model.Octokit")]
 [assembly: AssemblyDescription("")]
