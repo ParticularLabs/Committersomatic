@@ -1,4 +1,4 @@
-﻿namespace Committersomatic.Console
+﻿namespace Uranium.Console
 {
     using System;
     using System.Collections.Generic;

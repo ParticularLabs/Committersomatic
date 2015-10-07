@@ -7,8 +7,8 @@
     <ProjectGuid>{3924EF36-C791-4DFB-85E2-136EC12A5506}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Committersomatic.Console</RootNamespace>
-    <AssemblyName>Committersomatic.Console</AssemblyName>
+    <RootNamespace>Uranium.Console</RootNamespace>
+    <AssemblyName>Uranium.Console</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

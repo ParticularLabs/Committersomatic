@@ -1,2 +1,2 @@
-# Committersomatic
-A bit of automation to help derive and create our committer groups
+# Uranium
+Initially a bit of automation to help derive and create our committer groups, but evolving into something more...

@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{199D585F-83DF-4A38-A85C-628F5CB0B905}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Committersomatic.Console", "src\Committersomatic.Console\Committersomatic.Console.csproj", "{3924EF36-C791-4DFB-85E2-136EC12A5506}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uranium.Console", "src\Uranium.Console\Uranium.Console.csproj", "{3924EF36-C791-4DFB-85E2-136EC12A5506}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
