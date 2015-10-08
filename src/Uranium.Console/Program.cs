@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
     using ColoredConsole;
     using NodaTime;
+    using Uranium.Model;
     using Uranium.Model.Octokit;
 
     internal static class Program
@@ -21,19 +22,27 @@
         {
             var client = GitHubClientFactory.Create(
                 typeof(Program).Namespace,
-                Environment.GetEnvironmentVariable("OCTOKIT_GITHUBUSERNAME"), 
+                Environment.GetEnvironmentVariable("OCTOKIT_GITHUBUSERNAME"),
                 Environment.GetEnvironmentVariable("OCTOKIT_GITHUBPASSWORD"));
 
-            var organization = "Particular";
-            var groups = await new CrappyCommitterGroupService("groups.txt", organization).Get(organization);
-            foreach (var repo in (await client.Repository.GetAllForOrg(organization))
-                .Where(repo => !repo.Private)
-                .Where(repo => !groups.Any(group => group.RepositoryIdList.Any(repoId => repoId.Name == repo.Name)))
-                .OrderBy(repo => repo.Name))
+            var groups = await new CrappyCommitterGroupService("groups.txt", "Particular").Get("Particular");
+
+            var repositories = (await Task.WhenAll(groups
+                .SelectMany(@group => @group.RepositoryIdList.Select(id => id.Owner))
+                .Distinct()
+                .Select(org => client.Repository.GetAllForOrg(org))))
+                .SelectMany(repo => repo)
+                .Select(repo => new Model.Repository(new RepositoryId(repo.Name, repo.Owner.Login), repo.Private));
+
+            foreach (var repo in repositories
+                .Where(repo => !repo.IsPrivate)
+                .Where(repo => !groups.Any(group => group.RepositoryIdList.Contains(repo.Id)))
+                .OrderBy(repo => repo.Id.Owner)
+                .ThenBy(repo => repo.Id.Name))
             {
                 ColorConsole.WriteLine(
                     "* **".White(),
-                    string.Format(CultureInfo.InvariantCulture, "Repo '{0}' is not grouped!", repo.Name).Red(),
+                    $"Repo '{repo.Id.Owner}/{repo.Id.Name}' is not grouped!".Red(),
                     "**".White());
             }
 
