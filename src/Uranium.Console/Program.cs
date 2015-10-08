@@ -41,9 +41,7 @@
                 .ThenBy(repo => repo.Id.Name))
             {
                 ColorConsole.WriteLine(
-                    "* **".White(),
-                    $"Repo '{repo.Id.Owner}/{repo.Id.Name}' is not grouped!".Red(),
-                    "**".White());
+                    "* **".White(), $"Repo '{repo.Id.Owner}/{repo.Id.Name}' is not grouped!".Red(), "**".White());
             }
 
             var groupLoginContributions = new List<Contribution>();
@@ -78,7 +76,10 @@
 
                     foreach (var commit in commits.Where(commit => commit.Committer != null))
                     {
-                        var age = Period.Between(commit.Committed.LocalDateTime, OffsetDateTime.FromDateTimeOffset(DateTimeOffset.UtcNow).LocalDateTime);
+                        var age = Period.Between(
+                            commit.Committed.LocalDateTime,
+                            OffsetDateTime.FromDateTimeOffset(DateTimeOffset.UtcNow).LocalDateTime);
+
                         var value = 1 / Math.Pow(2, 2 * age.Days / 365.25d);
 
                         double sum;
