@@ -32,7 +32,7 @@
                 .Distinct()
                 .Select(org => client.Repository.GetAllForOrg(org))))
                 .SelectMany(repo => repo)
-                .Select(repo => new Model.Repository(new RepositoryId(repo.Name, repo.Owner.Login), repo.Private));
+                .Select(repo => new Repository(new RepositoryId(repo.Name, repo.Owner.Login), repo.Private));
 
             foreach (var repo in repositories
                 .Where(repo => !repo.IsPrivate)
@@ -59,7 +59,7 @@
                 {
                     ColorConsole.WriteLine("* ".White(), repo.Name.Green());
 
-                    IReadOnlyList<Model.Commit> commits;
+                    IReadOnlyList<Commit> commits;
                     try
                     {
                         commits = await commitService.Get(repo.Owner, repo.Name);
