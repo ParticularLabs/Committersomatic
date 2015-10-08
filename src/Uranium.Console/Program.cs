@@ -8,8 +8,6 @@
     using System.Threading.Tasks;
     using ColoredConsole;
     using NodaTime;
-    using Octokit;
-    using Octokit.Internal;
     using Uranium.Model.Octokit;
 
     internal static class Program
@@ -21,18 +19,10 @@
 
         private static async Task MainAsync()
         {
-            var credentials = new Credentials(
-                Environment.GetEnvironmentVariable("OCTOKIT_GITHUBUSERNAME"),
+            var client = GitHubClientFactory.Create(
+                typeof(Program).Namespace,
+                Environment.GetEnvironmentVariable("OCTOKIT_GITHUBUSERNAME"), 
                 Environment.GetEnvironmentVariable("OCTOKIT_GITHUBPASSWORD"));
-
-            var credentialStore = new InMemoryCredentialStore(credentials);
-
-            var connection = new Connection(
-                new ProductHeaderValue("GitHubIssues"),
-                GitHubClient.GitHubApiUrl,
-                credentialStore);
-
-            var client = new GitHubClient(connection);
 
             var organization = "Particular";
             var groups = await new CrappyCommitterGroupService("groups.txt", organization).Get(organization);
