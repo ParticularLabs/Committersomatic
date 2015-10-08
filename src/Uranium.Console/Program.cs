@@ -66,7 +66,7 @@
                     {
                         ColorConsole.WriteLine(
                             "*".White(),
-                            string.Format(CultureInfo.InvariantCulture, "Failed to get commits for '{0}'.", repo).Red(),
+                            $"Failed to get commits for '{repo.Owner}/{repo.Name}'.".Red(),
                             " ",
                             ex.Message.Yellow(),
                             "*".White());
