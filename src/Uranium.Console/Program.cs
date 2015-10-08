@@ -21,8 +21,6 @@
 
         private static async Task MainAsync()
         {
-            var organization = "Particular";
-
             var credentials = new Credentials(
                 Environment.GetEnvironmentVariable("OCTOKIT_GITHUBUSERNAME"),
                 Environment.GetEnvironmentVariable("OCTOKIT_GITHUBPASSWORD"));
@@ -36,16 +34,11 @@
 
             var client = new GitHubClient(connection);
 
-            var groups = File.ReadAllLines("groups.txt")
-                .Select(line => line.Trim())
-                .Where(line => !line.StartsWith("//", StringComparison.Ordinal))
-                .Select(line => line.Split())
-                .GroupBy(tokens => tokens[1], tokens => tokens[0])
-                .ToDictionary(group => group.Key, group => group.ToList());
-
+            var organization = "Particular";
+            var groups = await new CrappyCommitterGroupService("groups.txt", organization).Get(organization);
             foreach (var repo in (await client.Repository.GetAllForOrg(organization))
                 .Where(repo => !repo.Private)
-                .Where(repo => !groups.Any(group => group.Value.Contains(repo.Name)))
+                .Where(repo => !groups.Any(group => group.RepositoryIdList.Any(repoId => repoId.Name == repo.Name)))
                 .OrderBy(repo => repo.Name))
             {
                 ColorConsole.WriteLine(
@@ -60,17 +53,17 @@
             {
                 ColorConsole.WriteLine();
                 ColorConsole.WriteLine();
-                ColorConsole.WriteLine("# ".White(), group.Key.Yellow());
+                ColorConsole.WriteLine("# ".White(), group.Name.Yellow());
                 ColorConsole.WriteLine("### Repos".White());
                 var contributions = new Dictionary<string, double>();
-                foreach (var repo in group.Value)
+                foreach (var repo in group.RepositoryIdList)
                 {
-                    ColorConsole.WriteLine("* ".White(), repo.Green());
+                    ColorConsole.WriteLine("* ".White(), repo.Name.Green());
 
                     IReadOnlyList<Model.Commit> commits;
                     try
                     {
-                        commits = await commitService.Get(organization, repo);
+                        commits = await commitService.Get(repo.Owner, repo.Name);
                     }
                     catch (Exception ex)
                     {
@@ -104,7 +97,7 @@
                 groupLoginContributions.AddRange(contributions
                     .OrderByDescending(contribution => contribution.Value)
                     .Select(contribution =>
-                        new Contribution { Group = @group.Key, Login = contribution.Key, Score = contribution.Value }));
+                        new Contribution { Group = group.Name, Login = contribution.Key, Score = contribution.Value }));
             }
 
             using (var writer = new StreamWriter("matrix.txt", false))

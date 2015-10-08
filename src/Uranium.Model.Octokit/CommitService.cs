@@ -24,7 +24,7 @@ namespace Uranium.Model.Octokit
                     OffsetDateTime.FromDateTimeOffset(commit.Commit.Committer.Date),
                     commit.Committer.Login,
                     OffsetDateTime.FromDateTimeOffset(commit.Commit.Author.Date),
-                    new Repository(repositoryName, repositoryOwner)))
+                    new RepositoryId(repositoryName, repositoryOwner)))
                 .ToArray();
         }
     }
