@@ -35,6 +35,8 @@
             var client = new GitHubClient(connection);
 
             var groups = File.ReadAllLines("groups.txt")
+                .Select(line => line.Trim())
+                .Where(line => !line.StartsWith("//", StringComparison.Ordinal))
                 .Select(line => line.Split())
                 .GroupBy(tokens => tokens[1], tokens => tokens[0])
                 .ToDictionary(group => group.Key, group => group.ToList());
