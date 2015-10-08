@@ -55,7 +55,6 @@
             }
 
             var groupLoginContributions = new List<Contribution>();
-            var staff = await client.Organization.Member.GetAll(organization);
             var commitService = new CommitService(client);
             foreach (var group in groups)
             {
@@ -85,9 +84,7 @@
                         continue;
                     }
 
-                    foreach (var commit in commits
-                        .Where(commit => commit.Committer != null)
-                        .Where(commit => staff.Any(member => member.Login == commit.Committer)))
+                    foreach (var commit in commits.Where(commit => commit.Committer != null))
                     {
                         var age = Period.Between(commit.Committed.LocalDateTime, OffsetDateTime.FromDateTimeOffset(DateTimeOffset.UtcNow).LocalDateTime);
                         var value = 1 / Math.Pow(2, 2 * age.Days / 365.25d);
