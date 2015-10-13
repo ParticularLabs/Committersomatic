@@ -84,16 +84,16 @@ namespace Uranium.Model
         }
 
         public static async Task<IReadOnlyList<Contribution>> Get(
-            IReadOnlyCollection<CommitterGroup> committerGroups, IPullRequestService issueService)
+            IReadOnlyCollection<CommitterGroup> committerGroups, IPullRequestService pullRequestService)
         {
             Guard.AgainstNullArgument(nameof(committerGroups), committerGroups);
-            Guard.AgainstNullArgument(nameof(issueService), issueService);
+            Guard.AgainstNullArgument(nameof(pullRequestService), pullRequestService);
 
             return
                 (await Task.WhenAll(committerGroups.SelectMany(group => @group.RepositoryList.Select(id =>
                 {
                     log.InfoFormat("Getting pull requests for {@Repository}...", id);
-                    return issueService.Get(id.Owner, id.Name).ContinueWith(task =>
+                    return pullRequestService.Get(id.Owner, id.Name).ContinueWith(task =>
                     {
                         if (task.Exception != null)
                         {
