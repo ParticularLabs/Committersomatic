@@ -27,12 +27,12 @@
 
             var groups = await new CrappyCommitterGroupService("groups.txt", "Particular").Get("Particular");
 
+            var repositoryService = new RepositoryService(client);
             var repositories = (await Task.WhenAll(groups
-                .SelectMany(@group => @group.RepositoryList.Select(id => id.Owner))
-                .Distinct()
-                .Select(org => client.Repository.GetAllForOrg(org))))
-                .SelectMany(repo => repo)
-                .Select(repo => new Repository(new RepositoryId(repo.Owner.Login, repo.Name), repo.Private));
+                    .SelectMany(@group => @group.RepositoryList.Select(id => id.Owner))
+                    .Distinct()
+                    .Select(org => repositoryService.Get(org))))
+                .SelectMany(_ => _);
 
             foreach (var repo in repositories
                 .Where(repo => !repo.IsPrivate)
