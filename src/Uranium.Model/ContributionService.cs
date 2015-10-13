@@ -25,7 +25,7 @@ namespace Uranium.Model
                         {
                             if (task.Exception != null)
                             {
-                                log.ErrorException("Failed to getting commits for {@Repository}.", task.Exception.InnerException, id);
+                                log.ErrorException("Failed to get commits for {@Repository}.", task.Exception.InnerException, id);
                                 return Enumerable.Empty<Commit>();
                             }
 
@@ -63,7 +63,7 @@ namespace Uranium.Model
                     {
                         if (task.Exception != null)
                         {
-                            log.ErrorException("Failed to getting issues for {@Repository}.", task.Exception.InnerException, id);
+                            log.ErrorException("Failed to get issues for {@Repository}.", task.Exception.InnerException, id);
                             return Enumerable.Empty<Issue>();
                         }
 
@@ -97,7 +97,7 @@ namespace Uranium.Model
                     {
                         if (task.Exception != null)
                         {
-                            log.ErrorException("Failed to getting pull requests for {@Repository}.", task.Exception.InnerException, id);
+                            log.ErrorException("Failed to get pull requests for {@Repository}.", task.Exception.InnerException, id);
                             return Enumerable.Empty<PullRequest>();
                         }
 
