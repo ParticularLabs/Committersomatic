@@ -20,3 +20,8 @@ type Commit = {
     Committer : string;
     Authored : OffsetDateTime;
     Author : string; }
+
+type Contribution = {
+    Group : string;
+    Login : string;
+    Score : double }

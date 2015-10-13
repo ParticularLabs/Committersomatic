@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using ColoredConsole;
-    using NodaTime;
     using Uranium.Model;
     using Uranium.Model.Octokit;
 
@@ -43,27 +42,7 @@
                     "* **".White(), $"Repo '{repo.Id.Owner}/{repo.Id.Name}' is not grouped!".Red(), "**".White());
             }
 
-            var commitService = new CommitService(client);
-            var contributions = (await Task.WhenAll(committerGroups.SelectMany(group => group.RepositoryList.Select(id =>
-                {
-                    ColorConsole.WriteLine($"Getting commits for \"#{id.Owner}/#{id.Name}\"...".Green());
-                    return commitService.Get(id.Owner, id.Name).ContinueWith(task =>
-                    {
-                        if (task.Exception != null)
-                        {
-                            ColorConsole.WriteLine($"Failed to getting commits for \"#{id.Owner}/#{id.Name}\". #{task.Exception.InnerException.Message}".Red());
-                            return Enumerable.Empty<Commit>();
-                        }
-
-                        Console.WriteLine($"Got commits for \"#{id.Owner}/#{id.Name}\"".Green());
-                        return task.Result;
-                    });
-                }))))
-                .SelectMany(_ => _)
-                .Select(commit => new { Login = commit.Committer, commit.Repository, Score = Score(commit) })
-                .GroupBy(contribution => new { Group = committerGroups.First(group => group.RepositoryList.Contains(contribution.Repository)).Name, contribution.Login })
-                .Select(g => new Contribution { Group = g.Key.Group, Login = g.Key.Login, Score = g.Sum(contribution => contribution.Score) })
-                .ToList();
+            var contributions = await ContributionService.Get(committerGroups, new CommitService(client));
 
             using (var writer = new StreamWriter("matrix.txt", false))
             {
@@ -92,24 +71,6 @@
                     writer.WriteLine();
                 }
             }
-        }
-
-        private static double Score(Commit commit)
-        {
-            var age = Period.Between(
-                commit.Committed.LocalDateTime,
-                OffsetDateTime.FromDateTimeOffset(DateTimeOffset.UtcNow).LocalDateTime);
-
-            return 1 / Math.Pow(2, 2 * age.Days / 365.25d);
-        }
-
-        private class Contribution
-        {
-            public string Group { get; set; }
-
-            public string Login { get; set; }
-
-            public double Score { get; set; }
         }
     }
 }
