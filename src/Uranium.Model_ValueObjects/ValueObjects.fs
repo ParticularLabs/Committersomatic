@@ -1,27 +1,22 @@
 ﻿namespace Uranium.Model
 
-open Microsoft.FSharp.Collections
 open NodaTime
 
-[<StructuralEquality;NoComparison>]
 type RepositoryId = {
-    Name : string;
-    Owner : string }
+    Owner : string;
+    Name : string; }
 
-[<StructuralEquality;NoComparison>]
 type Repository = {
     Id : RepositoryId;
-    IsPrivate : bool }
+    IsPrivate : bool; }
 
-[<StructuralEquality;NoComparison>]
 type CommitterGroup = {
     Name : string;
-    RepositoryIdList : RepositoryId List }
+    RepositoryIdList : RepositoryId List; }
 
-[<StructuralEquality;NoComparison>]
 type Commit = {
-    Author : string;
-    Authored : OffsetDateTime;
-    Committer : string;
+    Repository : RepositoryId;
     Committed : OffsetDateTime;
-    Repository : RepositoryId }
+    Committer : string;
+    Authored : OffsetDateTime;
+    Author : string; }

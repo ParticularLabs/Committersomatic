@@ -32,13 +32,12 @@
                 .Distinct()
                 .Select(org => client.Repository.GetAllForOrg(org))))
                 .SelectMany(repo => repo)
-                .Select(repo => new Repository(new RepositoryId(repo.Name, repo.Owner.Login), repo.Private));
+                .Select(repo => new Repository(new RepositoryId(repo.Owner.Login, repo.Name), repo.Private));
 
             foreach (var repo in repositories
                 .Where(repo => !repo.IsPrivate)
                 .Where(repo => !groups.Any(group => group.RepositoryIdList.Contains(repo.Id)))
-                .OrderBy(repo => repo.Id.Owner)
-                .ThenBy(repo => repo.Id.Name))
+                .OrderBy(_ => _))
             {
                 ColorConsole.WriteLine(
                     "* **".White(), $"Repo '{repo.Id.Owner}/{repo.Id.Name}' is not grouped!".Red(), "**".White());

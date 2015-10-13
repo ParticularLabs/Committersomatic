@@ -20,11 +20,11 @@ namespace Uranium.Model.Octokit
         {
             return (await this.client.Repository.Commits.GetAll(repositoryOwner, repositoryName))
                 .Select(commit => new Commit(
-                    commit.Author.Login,
+                    new RepositoryId(repositoryOwner, repositoryName),
                     OffsetDateTime.FromDateTimeOffset(commit.Commit.Committer.Date),
                     commit.Committer.Login,
                     OffsetDateTime.FromDateTimeOffset(commit.Commit.Author.Date),
-                    new RepositoryId(repositoryName, repositoryOwner)))
+                    commit.Author.Login))
                 .ToArray();
         }
     }

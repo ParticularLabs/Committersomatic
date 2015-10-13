@@ -32,7 +32,7 @@
                 .GroupBy(tokens => tokens[1], tokens => tokens[0])
                 .Select(group => new CommitterGroup(
                     group.Key,
-                    ListModule.OfSeq(group.Select(repositoryName => new RepositoryId(repositoryName, repositoryOwner)))))
+                    ListModule.OfSeq(group.Select(repositoryName => new RepositoryId(repositoryOwner, repositoryName)))))
                 .ToList();
 
             return Task.FromResult(result);
