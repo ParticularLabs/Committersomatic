@@ -1,6 +1,6 @@
 ﻿AutomaticOctopusConfigSandbox	Automation
-//Automation.Engineering	Automation
-//Automation.ITOps	Automation
+Automation.Engineering	Automation
+Automation.ITOps	Automation
 //Automation.Marketing	Automation
 //BuildProcess.StandardNuGet	Automation
 //ConsoleTweet	Automation
@@ -39,9 +39,9 @@
 //NServiceBus.NLog	NServiceBus
 //NServiceBus.Testing	NServiceBus
 //Topshelf	NServiceBus
-//NServiceBus.Autofac	NServiceBus.Container
-//NServiceBus.CastleWindsor	NServiceBus.Container
-//NServiceBus.Ninject	NServiceBus.Container
+NServiceBus.Autofac	NServiceBus.Container
+NServiceBus.CastleWindsor	NServiceBus.Container
+NServiceBus.Ninject	NServiceBus.Container
 //NServiceBus.Spring	NServiceBus.Container
 //NServiceBus.StructureMap	NServiceBus.Container
 //NServiceBus.Unity	NServiceBus.Container
