@@ -11,7 +11,8 @@
     {
         private static readonly ILog log = LogProvider.GetCurrentClassLogger();
 
-        public static async Task RunAsync(string organization, string githubLogin, string githubPassword)
+        public static async Task RunAsync(
+            string organization, string githubLogin, string githubPassword, bool includePrivateRepositories)
         {
             var committerGroups = await CrappyCommitterGroupService.Get(organization);
 
@@ -22,6 +23,7 @@
                     .Distinct()
                     .Select(owner => repositoryService.Get(owner))))
                 .SelectMany(_ => _)
+                .Where(repository => includePrivateRepositories || !repository.IsPrivate)
                 .ToList();
 
             var ungroupedRepositories = repositories

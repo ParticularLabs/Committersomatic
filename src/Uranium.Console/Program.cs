@@ -16,11 +16,12 @@
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] ({Name:l}) {Message}{NewLine}{Exception}")
                 .CreateLogger();
 
-            Application.RunAsync(
-                    "Particular",
-                    Environment.GetEnvironmentVariable("OCTOKIT_GITHUBUSERNAME"),
-                    Environment.GetEnvironmentVariable("OCTOKIT_GITHUBPASSWORD"))
-                .Wait();
+            var organization = "Particular";
+            var githubLogin = Environment.GetEnvironmentVariable("OCTOKIT_GITHUBUSERNAME");
+            var githubPassword = Environment.GetEnvironmentVariable("OCTOKIT_GITHUBPASSWORD");
+            var includePrivateRepositories = false;
+
+            Application.RunAsync(organization, githubLogin, githubPassword, includePrivateRepositories).Wait();
         }
     }
 }
