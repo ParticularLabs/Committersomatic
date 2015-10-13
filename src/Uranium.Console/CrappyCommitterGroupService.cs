@@ -8,24 +8,11 @@
     using Microsoft.FSharp.Collections;
     using Uranium.Model;
 
-    internal class CrappyCommitterGroupService : ICommitterGroupService
+    internal static class CrappyCommitterGroupService
     {
-        private readonly string filename;
-        private readonly string repositoryOwner;
-
-        public CrappyCommitterGroupService(string filename, string repositoryOwner)
+        public static Task<IReadOnlyList<CommitterGroup>> Get(string repositoryOwner)
         {
-            this.filename = filename;
-            this.repositoryOwner = repositoryOwner;
-        }
-        public Task<IReadOnlyList<CommitterGroup>> Get(string repositoryOwner)
-        {
-            if (!string.Equals(repositoryOwner, this.repositoryOwner, StringComparison.InvariantCultureIgnoreCase))
-            {
-                throw new InvalidOperationException($"Cannot get committer groups for \"{repositoryOwner}\".");
-            }
-
-            IReadOnlyList<CommitterGroup> result = File.ReadAllLines(this.filename)
+            IReadOnlyList<CommitterGroup> result = File.ReadAllLines($"groups-{repositoryOwner}.txt")
                 .Select(line => line.Trim())
                 .Where(line => !line.StartsWith("//", StringComparison.Ordinal))
                 .Select(line => line.Split())

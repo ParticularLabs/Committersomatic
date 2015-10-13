@@ -5,7 +5,7 @@ using Octokit;
 
 namespace Uranium.Model.Octokit
 {
-    public class RepositoryService : IRepositoryService
+    public class RepositoryService
     {
         private readonly IGitHubClient client;
         public RepositoryService(IGitHubClient client)

@@ -3,7 +3,7 @@ using Octokit.Internal;
 
 namespace Uranium.Console
 {
-    internal class GitHubClientFactory
+    internal static class GitHubClientFactory
     {
         public static GitHubClient Create(string application, string login, string password)
         {

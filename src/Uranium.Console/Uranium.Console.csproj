@@ -44,6 +44,7 @@
     <Compile Include="CrappyCommitterGroupService.cs" />
     <Compile Include="GitHubClientFactory.cs" />
     <Compile Include="Guard.cs" />
+    <Compile Include="Application.cs" />
     <Compile Include="TsvContributionsRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,7 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="groups.txt">
+    <None Include="groups-Particular.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
