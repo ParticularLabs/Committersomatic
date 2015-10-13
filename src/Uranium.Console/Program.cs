@@ -40,7 +40,16 @@
                     "* **".White(), $"Repo '{repo.Id.Owner}/{repo.Id.Name}' is not grouped!".Red(), "**".White());
             }
 
-            TsvContributionsRepository.Save(await ContributionService.Get(committerGroups, new CommitService(client)));
+            var contributions = (await Task.WhenAll(
+                    ContributionService.Get(committerGroups, new CommitService(client)),
+                    ContributionService.Get(committerGroups, new IssueService(client)),
+                    ContributionService.Get(committerGroups, new PullRequestService(client))))
+                .SelectMany(_ => _)
+                .GroupBy(contribution => new { contribution.Group, contribution.Login })
+                .Select(group => new Contribution(group.Key.Group, group.Key.Login, group.Sum(contribution => contribution.Score)))
+                .ToList();
+
+            TsvContributionsRepository.Save(contributions);
         }
     }
 }

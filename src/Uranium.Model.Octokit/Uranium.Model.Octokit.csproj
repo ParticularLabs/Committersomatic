@@ -33,6 +33,8 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="PullRequestService.cs" />
+    <Compile Include="IssueService.cs" />
     <Compile Include="RepositoryService.cs" />
     <Compile Include="CommitService.cs" />
     <Compile Include="Guard.cs" />

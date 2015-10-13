@@ -35,6 +35,8 @@
     </Compile>
     <Compile Include="ContributionService.cs" />
     <Compile Include="Guard.cs" />
+    <Compile Include="IPullRequestService.cs" />
+    <Compile Include="IIssueService.cs" />
     <Compile Include="IRepositoryService.cs" />
     <Compile Include="ICommitterGroupService.cs" />
     <Compile Include="ICommitService.cs" />

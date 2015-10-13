@@ -21,6 +21,16 @@ type Commit = {
     Authored : OffsetDateTime;
     Author : string; }
 
+type Issue = {
+    Repository : RepositoryId;
+    Created : OffsetDateTime;
+    Creator : string; }
+
+type PullRequest = {
+    Repository : RepositoryId;
+    Created : OffsetDateTime;
+    Creator : string; }
+
 type Contribution = {
     Group : string;
     Login : string;
