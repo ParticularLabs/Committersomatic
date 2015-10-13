@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NodaTime;
+using Uranium.Model.Logging;
 
 namespace Uranium.Model
 {
     public static class ContributionService
     {
+        private static readonly ILog log = LogProvider.GetCurrentClassLogger();
+
         public static async Task<IReadOnlyList<Contribution>> Get(
             IReadOnlyCollection<CommitterGroup> committerGroups, ICommitService commitService)
         {
@@ -17,16 +20,16 @@ namespace Uranium.Model
             return
                 (await Task.WhenAll(committerGroups.SelectMany(group => @group.RepositoryList.Select(id =>
                     {
-                        Console.WriteLine($"Getting commits for \"#{id.Owner}/#{id.Name}\"...");
+                        log.InfoFormat("Getting commits for {@Repository}...", id);
                         return commitService.Get(id.Owner, id.Name).ContinueWith(task =>
                         {
                             if (task.Exception != null)
                             {
-                                Console.WriteLine($"Failed to getting commits for \"#{id.Owner}/#{id.Name}\". #{task.Exception.InnerException.Message}");
+                                log.ErrorException("Failed to getting commits for {@Repository}.", task.Exception.InnerException, id);
                                 return Enumerable.Empty<Commit>();
                             }
 
-                            Console.WriteLine($"Got commits for \"#{id.Owner}/#{id.Name}\"");
+                            log.InfoFormat("Got commits for {@Repository}.", id);
                             return task.Result;
                         });
                     }))))
@@ -55,16 +58,16 @@ namespace Uranium.Model
             return
                 (await Task.WhenAll(committerGroups.SelectMany(group => @group.RepositoryList.Select(id =>
                 {
-                    Console.WriteLine($"Getting issues for \"#{id.Owner}/#{id.Name}\"...");
+                    log.InfoFormat("Getting issues for {@Repository}...", id);
                     return issueService.Get(id.Owner, id.Name).ContinueWith(task =>
                     {
                         if (task.Exception != null)
                         {
-                            Console.WriteLine($"Failed to getting issues for \"#{id.Owner}/#{id.Name}\". #{task.Exception.InnerException.Message}");
+                            log.ErrorException("Failed to getting issues for {@Repository}.", task.Exception.InnerException, id);
                             return Enumerable.Empty<Issue>();
                         }
 
-                        Console.WriteLine($"Got issues for \"#{id.Owner}/#{id.Name}\"");
+                        log.InfoFormat("Got issues for {@Repository}.", id);
                         return task.Result;
                     });
                 }))))
@@ -89,16 +92,16 @@ namespace Uranium.Model
             return
                 (await Task.WhenAll(committerGroups.SelectMany(group => @group.RepositoryList.Select(id =>
                 {
-                    Console.WriteLine($"Getting pull requests for \"#{id.Owner}/#{id.Name}\"...");
+                    log.InfoFormat("Getting pull requests for {@Repository}...", id);
                     return issueService.Get(id.Owner, id.Name).ContinueWith(task =>
                     {
                         if (task.Exception != null)
                         {
-                            Console.WriteLine($"Failed to getting pull requests for \"#{id.Owner}/#{id.Name}\". #{task.Exception.InnerException.Message}");
+                            log.ErrorException("Failed to getting pull requests for {@Repository}.", task.Exception.InnerException, id);
                             return Enumerable.Empty<PullRequest>();
                         }
 
-                        Console.WriteLine($"Got pull requests for \"#{id.Owner}/#{id.Name}\"");
+                        log.InfoFormat("Got pull requests for {@Repository}.", id);
                         return task.Result;
                     });
                 }))))

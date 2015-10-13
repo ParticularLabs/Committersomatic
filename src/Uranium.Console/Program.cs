@@ -3,7 +3,7 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using ColoredConsole;
+    using Serilog;
     using Uranium.Model;
     using Uranium.Model.Octokit;
 
@@ -16,6 +16,11 @@
 
         private static async Task MainAsync()
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.ColoredConsole(
+                    outputTemplate: "{Timestamp:HH:mm} [{Level}] ({Name:l}) {Message}{NewLine}{Exception}")
+                .CreateLogger();
+
             var client = GitHubClientFactory.Create(
                 typeof(Program).Namespace,
                 Environment.GetEnvironmentVariable("OCTOKIT_GITHUBUSERNAME"),
@@ -36,8 +41,7 @@
 
             foreach (var repo in ungroupedRepositories.OrderBy(_ => _))
             {
-                ColorConsole.WriteLine(
-                    "* **".White(), $"Repo '{repo.Id.Owner}/{repo.Id.Name}' is not grouped!".Red(), "**".White());
+                Console.WriteLine($"Repo '{repo.Id.Owner}/{repo.Id.Name}' is not grouped!");
             }
 
             var contributions = (await Task.WhenAll(
