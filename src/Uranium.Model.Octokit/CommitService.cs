@@ -22,9 +22,9 @@ namespace Uranium.Model.Octokit
                 .Select(commit => new Commit(
                     new RepositoryId(repositoryOwner, repositoryName),
                     OffsetDateTime.FromDateTimeOffset(commit.Commit.Committer.Date),
-                    commit.Committer.Login,
+                    commit.Committer?.Login ?? $"{commit.Commit.Committer.Name} <{commit.Commit.Committer.Email}>",
                     OffsetDateTime.FromDateTimeOffset(commit.Commit.Author.Date),
-                    commit.Author.Login))
+                    commit.Author?.Login ?? $"{commit.Commit.Author.Name} <{commit.Commit.Author.Email}>"))
                 .ToList();
         }
     }
