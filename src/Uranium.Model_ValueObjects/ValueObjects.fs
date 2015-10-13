@@ -12,7 +12,7 @@ type Repository = {
 
 type CommitterGroup = {
     Name : string;
-    RepositoryIdList : RepositoryId List; }
+    RepositoryList : RepositoryId List; }
 
 type Commit = {
     Repository : RepositoryId;

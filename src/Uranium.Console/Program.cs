@@ -28,7 +28,7 @@
             var groups = await new CrappyCommitterGroupService("groups.txt", "Particular").Get("Particular");
 
             var repositories = (await Task.WhenAll(groups
-                .SelectMany(@group => @group.RepositoryIdList.Select(id => id.Owner))
+                .SelectMany(@group => @group.RepositoryList.Select(id => id.Owner))
                 .Distinct()
                 .Select(org => client.Repository.GetAllForOrg(org))))
                 .SelectMany(repo => repo)
@@ -36,7 +36,7 @@
 
             foreach (var repo in repositories
                 .Where(repo => !repo.IsPrivate)
-                .Where(repo => !groups.Any(group => group.RepositoryIdList.Contains(repo.Id)))
+                .Where(repo => !groups.Any(group => group.RepositoryList.Contains(repo.Id)))
                 .OrderBy(_ => _))
             {
                 ColorConsole.WriteLine(
@@ -52,7 +52,7 @@
                 ColorConsole.WriteLine("# ".White(), group.Name.Yellow());
                 ColorConsole.WriteLine("### Repos".White());
                 var contributions = new Dictionary<string, double>();
-                foreach (var repo in group.RepositoryIdList)
+                foreach (var repo in group.RepositoryList)
                 {
                     ColorConsole.WriteLine("* ".White(), repo.Name.Green());
 
