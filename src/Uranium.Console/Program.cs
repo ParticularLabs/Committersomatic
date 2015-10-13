@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Serilog;
+    using Uranium.Console.Logging;
     using Uranium.Model;
     using Uranium.Model.Octokit;
 
@@ -17,14 +18,20 @@
         private static async Task MainAsync()
         {
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.ColoredConsole(
-                    outputTemplate: "{Timestamp:HH:mm} [{Level}] ({Name:l}) {Message}{NewLine}{Exception}")
+                .WriteTo
+                .ColoredConsole(outputTemplate: "{Timestamp:HH:mm} [{Level}] ({Name:l}) {Message}{NewLine}{Exception}")
+                .WriteTo
+                .File(
+                    $"{typeof(Program).Assembly.GetName().Name}.log",
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] ({Name:l}) {Message}{NewLine}{Exception}")
                 .CreateLogger();
 
+            var log = LogProvider.GetCurrentClassLogger();
+
             var client = GitHubClientFactory.Create(
-                typeof(Program).Namespace,
-                Environment.GetEnvironmentVariable("OCTOKIT_GITHUBUSERNAME"),
-                Environment.GetEnvironmentVariable("OCTOKIT_GITHUBPASSWORD"));
+                    typeof(Program).Namespace,
+                    Environment.GetEnvironmentVariable("OCTOKIT_GITHUBUSERNAME"),
+                    Environment.GetEnvironmentVariable("OCTOKIT_GITHUBPASSWORD"));
 
             var committerGroups = await new CrappyCommitterGroupService("groups.txt", "Particular").Get("Particular");
 
@@ -39,9 +46,9 @@
             var ungroupedRepositories = repositories
                 .Where(repository => !committerGroups.Any(group => group.RepositoryList.Contains(repository.Id)));
 
-            foreach (var repo in ungroupedRepositories.OrderBy(_ => _))
+            foreach (var repository in ungroupedRepositories.OrderBy(_ => _))
             {
-                Console.WriteLine($"Repo '{repo.Id.Owner}/{repo.Id.Name}' is not grouped!");
+                log.WarnFormat("{@Repository} is not grouped.", repository);
             }
 
             var contributions = (await Task.WhenAll(
