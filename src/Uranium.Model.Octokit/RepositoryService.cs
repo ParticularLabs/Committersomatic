@@ -19,7 +19,7 @@ namespace Uranium.Model.Octokit
         {
             return (await this.client.Repository.GetAllForOrg(organisation))
                 .Select(repository => new Repository(new RepositoryId(organisation,repository.Name),repository.Private))
-                .ToArray();
+                .ToList();
         }
     }
 }
