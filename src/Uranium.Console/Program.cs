@@ -1,8 +1,6 @@
 ﻿namespace Uranium.Console
 {
     using System;
-    using System.Globalization;
-    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
     using ColoredConsole;
@@ -42,35 +40,7 @@
                     "* **".White(), $"Repo '{repo.Id.Owner}/{repo.Id.Name}' is not grouped!".Red(), "**".White());
             }
 
-            var contributions = await ContributionService.Get(committerGroups, new CommitService(client));
-
-            using (var writer = new StreamWriter("matrix.txt", false))
-            {
-                writer.Write("Login/Group");
-                foreach (var group in contributions.Select(contribution => contribution.Group).Distinct())
-                {
-                    writer.Write("\t" + group);
-                }
-
-                writer.WriteLine();
-
-                foreach (var login in contributions.Select(contribution => contribution.Login).Distinct())
-                {
-                    writer.Write(login);
-                    foreach (var group in contributions.Select(contribution => contribution.Group).Distinct())
-                    {
-                        var contribution =
-                            contributions.SingleOrDefault(
-                                candidate => candidate.Group == group && candidate.Login == login);
-
-                        writer.Write(
-                            "\t" +
-                            (contribution?.Score.ToString(CultureInfo.InvariantCulture) ?? "0"));
-                    }
-
-                    writer.WriteLine();
-                }
-            }
+            TsvContributionsRepository.Save(await ContributionService.Get(committerGroups, new CommitService(client)));
         }
     }
 }
