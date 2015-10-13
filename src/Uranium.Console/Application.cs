@@ -20,6 +20,7 @@
             var repositoryService = new RepositoryService(client);
             var repositories = (await Task.WhenAll(committerGroups
                     .SelectMany(@group => @group.RepositoryList.Select(id => id.Owner))
+                    .Concat(new[] { organization })
                     .Distinct()
                     .Select(owner => repositoryService.Get(owner))))
                 .SelectMany(_ => _)
