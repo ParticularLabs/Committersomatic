@@ -35,7 +35,6 @@
                 .SelectMany(_ => _);
 
             foreach (var repo in repositories
-                .Where(repo => !repo.IsPrivate)
                 .Where(repo => !groups.Any(group => group.RepositoryList.Contains(repo.Id)))
                 .OrderBy(_ => _))
             {
