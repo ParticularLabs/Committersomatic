@@ -8,7 +8,8 @@ namespace Uranium.Model
 {
     public static class ContributionService
     {
-        public static async Task<IReadOnlyList<Contribution>> Get(IReadOnlyCollection<CommitterGroup> committerGroups, ICommitService commitService)
+        public static async Task<IReadOnlyList<Contribution>> Get(
+            IReadOnlyCollection<CommitterGroup> committerGroups, ICommitService commitService)
         {
             Guard.AgainstNullArgument(nameof(committerGroups), committerGroups);
             Guard.AgainstNullArgument(nameof(commitService), commitService);
@@ -30,7 +31,8 @@ namespace Uranium.Model
             }))))
                 .SelectMany(_ => _)
                 .Select(commit => new { Login = commit.Committer, commit.Repository, Score = Score(commit) })
-                .GroupBy(contribution => new { Group = committerGroups.First(group => @group.RepositoryList.Contains(contribution.Repository)).Name, contribution.Login })
+                .GroupBy(contribution => new { Group = committerGroups
+                    .First(group => @group.RepositoryList.Contains(contribution.Repository)).Name, contribution.Login })
                 .Select(g => new Contribution(g.Key.Group, g.Key.Login, g.Sum(contribution => contribution.Score)))
                 .ToList();
         }
