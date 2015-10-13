@@ -31,22 +31,24 @@ namespace Uranium.Model
                         });
                     }))))
                 .SelectMany(_ => _)
-                .Select(commit => new { Login = commit.Committer, commit.Repository, Score = Score(commit) })
+                .SelectMany(commit => new[]
+                {
+                    new { commit.Repository, Login = commit.Committer, commit.Committed.LocalDateTime },
+                    new { commit.Repository, Login = commit.Author, commit.Authored.LocalDateTime },
+                })
+                .Distinct()
                 .GroupBy(contribution => new
                 {
                     Group = committerGroups.First(group => @group.RepositoryList.Contains(contribution.Repository)).Name,
                     contribution.Login
                 })
-                .Select(g => new Contribution(g.Key.Group, g.Key.Login, g.Sum(contribution => contribution.Score)))
+                .Select(g => new Contribution(g.Key.Group, g.Key.Login, g.Sum(contribution => Score(contribution.LocalDateTime))))
                 .ToList();
         }
 
-        private static double Score(Commit commit)
+        private static double Score(LocalDateTime activity)
         {
-            var age = Period.Between(
-                commit.Committed.LocalDateTime,
-                OffsetDateTime.FromDateTimeOffset(DateTimeOffset.UtcNow).LocalDateTime);
-
+            var age = Period.Between(activity, OffsetDateTime.FromDateTimeOffset(DateTimeOffset.UtcNow).LocalDateTime);
             return 1 / Math.Pow(2, 2 * age.Days / 365.25d);
         }
     }
