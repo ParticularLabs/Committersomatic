@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using Microsoft.FSharp.Collections;
     using Serilog;
     using Uranium.Console.Logging;
     using Uranium.Model;
@@ -44,12 +45,20 @@
                 .ToList();
 
             var ungroupedRepositories = repositories
-                .Where(repository => !committerGroups.Any(group => group.RepositoryList.Contains(repository.Id)));
+                .Where(repository => !committerGroups.Any(group => group.RepositoryList.Contains(repository.Id)))
+                .ToList();
 
             foreach (var repository in ungroupedRepositories.OrderBy(_ => _))
             {
                 log.WarnFormat("{@Repository} is not grouped.", repository);
             }
+
+            committerGroups =
+                committerGroups.Concat(new[]
+                {
+                    new CommitterGroup("(Ungrouped)",ListModule.OfSeq(ungroupedRepositories.Select(repository => repository.Id))),
+                })
+                .ToList();
 
             var contributions = (await Task.WhenAll(
                     ContributionService.Get(committerGroups, new CommitService(client)),
