@@ -10,6 +10,8 @@
     {
         public static void Save(IReadOnlyList<Contribution> contributions)
         {
+            Guard.AgainstNullArgument(nameof(contributions), contributions);
+
             using (var writer = new StreamWriter("contributions.txt", false))
             {
                 writer.Write("Login/Group");

@@ -40,6 +40,7 @@
     </Compile>
     <Compile Include="CrappyCommitterGroupService.cs" />
     <Compile Include="GitHubClientFactory.cs" />
+    <Compile Include="Guard.cs" />
     <Compile Include="TsvContributionsRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

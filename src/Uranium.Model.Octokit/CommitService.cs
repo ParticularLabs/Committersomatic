@@ -11,7 +11,7 @@ namespace Uranium.Model.Octokit
         private readonly IGitHubClient client;
         public CommitService(IGitHubClient client)
         {
-            Guard.AgainstNullArgument("client", client);
+            Guard.AgainstNullArgument(nameof(client), client);
 
             this.client = client;
         }

@@ -10,6 +10,9 @@ namespace Uranium.Model
     {
         public static async Task<IReadOnlyList<Contribution>> Get(IReadOnlyCollection<CommitterGroup> committerGroups, ICommitService commitService)
         {
+            Guard.AgainstNullArgument(nameof(committerGroups), committerGroups);
+            Guard.AgainstNullArgument(nameof(commitService), commitService);
+
             return (await Task.WhenAll(committerGroups.SelectMany(group => @group.RepositoryList.Select(id =>
             {
                 Console.WriteLine($"Getting commits for \"#{id.Owner}/#{id.Name}\"...");
