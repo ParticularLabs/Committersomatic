@@ -36,10 +36,9 @@
             }
 
             committerGroups =
-                committerGroups.Concat(new[]
-                {
-                    new CommitterGroup("(Ungrouped)", ListModule.OfSeq(ungroupedRepositories.Select(repository => repository.Id))),
-                })
+                committerGroups.Concat(ungroupedRepositories
+                    .GroupBy(repository => repository.Id.Owner)
+                    .Select(group => new CommitterGroup($"{group.Key}-ungrouped", ListModule.OfSeq(group.Select(repository => repository.Id)))))
                 .ToList();
 
             var contributions = (await Task.WhenAll(

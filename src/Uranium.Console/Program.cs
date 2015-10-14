@@ -16,7 +16,7 @@
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] ({Name:l}) {Message}{NewLine}{Exception}")
                 .CreateLogger();
 
-            var organizations = new[] { "Particular" };
+            var organizations = new[] { "Particular", "ParticularLabs" };
             var githubLogin = Environment.GetEnvironmentVariable("OCTOKIT_GITHUBUSERNAME");
             var githubPassword = Environment.GetEnvironmentVariable("OCTOKIT_GITHUBPASSWORD");
             var includePrivateRepositories = false;
