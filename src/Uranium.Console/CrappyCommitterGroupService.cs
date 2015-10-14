@@ -4,16 +4,15 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Threading.Tasks;
     using Microsoft.FSharp.Collections;
     using Uranium.Model;
 
     internal static class CrappyCommitterGroupService
     {
-        public static Task<IReadOnlyList<CommitterGroup>> Get(string repositoryOwner)
+        public static IReadOnlyList<CommitterGroup> Get(string repositoryOwner)
         {
             var path = $"groups-{repositoryOwner}.txt";
-            IReadOnlyList<CommitterGroup> result = File.Exists(path)
+            return File.Exists(path)
                 ? File.ReadAllLines(path)
                     .Select(line => line.Trim())
                     .Where(line => !line.StartsWith("//", StringComparison.Ordinal))
@@ -24,8 +23,6 @@
                         ListModule.OfSeq(@group.Select(repositoryName => new RepositoryId(repositoryOwner, repositoryName)))))
                     .ToList()
                 : new List<CommitterGroup>();
-
-            return Task.FromResult(result);
         }
     }
 }

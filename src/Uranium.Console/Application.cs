@@ -14,7 +14,7 @@
         public static async Task RunAsync(
             string organization, string githubLogin, string githubPassword, bool includePrivateRepositories)
         {
-            var committerGroups = await CrappyCommitterGroupService.Get(organization);
+            var committerGroups = CrappyCommitterGroupService.Get(organization);
 
             var client = GitHubClientFactory.Create(typeof(Program).Namespace, githubLogin, githubPassword);
             var repositoryService = new RepositoryService(client);
