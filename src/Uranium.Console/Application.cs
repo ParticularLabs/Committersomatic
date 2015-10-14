@@ -1,8 +1,9 @@
 ﻿namespace Uranium.Console
 {
+    using Microsoft.FSharp.Collections;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Microsoft.FSharp.Collections;
     using Uranium.Console.Logging;
     using Uranium.Model;
     using Uranium.Model.Octokit;
@@ -12,15 +13,15 @@
         private static readonly ILog log = LogProvider.GetCurrentClassLogger();
 
         public static async Task RunAsync(
-            string organization, string githubLogin, string githubPassword, bool includePrivateRepositories)
+            IReadOnlyList<string> organizations, string githubLogin, string githubPassword, bool includePrivateRepositories)
         {
-            var committerGroups = CrappyCommitterGroupService.Get(organization);
+            var committerGroups = organizations.SelectMany(CrappyCommitterGroupService.Get).ToList();
 
             var client = GitHubClientFactory.Create(typeof(Program).Namespace, githubLogin, githubPassword);
             var repositoryService = new RepositoryService(client);
             var repositories = (await Task.WhenAll(committerGroups
                     .SelectMany(@group => @group.RepositoryList.Select(id => id.Owner))
-                    .Concat(new[] { organization })
+                    .Concat(organizations)
                     .Distinct()
                     .Select(owner => repositoryService.Get(owner))))
                 .SelectMany(_ => _)
