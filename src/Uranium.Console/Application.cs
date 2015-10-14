@@ -18,17 +18,15 @@
             var committerGroups = organizations.SelectMany(CrappyCommitterGroupService.Get).ToList();
 
             var client = GitHubClientFactory.Create(typeof(Program).Namespace, githubLogin, githubPassword);
+
             var repositoryService = new RepositoryService(client);
-            var repositories = (await Task.WhenAll(committerGroups
+            var ungroupedRepositories = (await Task.WhenAll(committerGroups
                     .SelectMany(@group => @group.RepositoryList.Select(id => id.Owner))
                     .Concat(organizations)
                     .Distinct()
                     .Select(owner => repositoryService.Get(owner))))
                 .SelectMany(_ => _)
                 .Where(repository => includePrivateRepositories || !repository.IsPrivate)
-                .ToList();
-
-            var ungroupedRepositories = repositories
                 .Where(repository => !committerGroups.Any(group => group.RepositoryList.Contains(repository.Id)))
                 .ToList();
 
