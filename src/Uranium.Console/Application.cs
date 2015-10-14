@@ -13,7 +13,11 @@
         private static readonly ILog log = LogProvider.GetCurrentClassLogger();
 
         public static async Task RunAsync(
-            IReadOnlyList<string> organizations, string githubLogin, string githubPassword, bool includePrivateRepositories)
+            IReadOnlyList<string> organizations,
+            string githubLogin,
+            string githubPassword,
+            bool includePrivateRepositories,
+            bool includeUngroupedRepositories)
         {
             var committerGroups = organizations.SelectMany(CrappyCommitterGroupService.Get).ToList();
 
@@ -35,11 +39,15 @@
                 log.WarnFormat("{@Repository} is not grouped.", repository);
             }
 
-            committerGroups =
-                committerGroups.Concat(ungroupedRepositories
-                    .GroupBy(repository => repository.Id.Owner)
-                    .Select(group => new CommitterGroup($"{group.Key}-ungrouped", ListModule.OfSeq(group.Select(repository => repository.Id)))))
-                .ToList();
+            if (includeUngroupedRepositories)
+            {
+                committerGroups = committerGroups
+                    .Concat(ungroupedRepositories
+                        .GroupBy(repository => repository.Id.Owner)
+                        .Select(group => new CommitterGroup(
+                            $"{group.Key}-ungrouped", ListModule.OfSeq(group.Select(repository => repository.Id)))))
+                    .ToList();
+            }
 
             var contributions = (await Task.WhenAll(
                     ContributionService.Get(committerGroups, new CommitService(client)),

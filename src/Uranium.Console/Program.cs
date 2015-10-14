@@ -20,8 +20,15 @@
             var githubLogin = Environment.GetEnvironmentVariable("OCTOKIT_GITHUBUSERNAME");
             var githubPassword = Environment.GetEnvironmentVariable("OCTOKIT_GITHUBPASSWORD");
             var includePrivateRepositories = false;
+            var includeUngroupedRepositories = false;
 
-            Application.RunAsync(organizations, githubLogin, githubPassword, includePrivateRepositories).Wait();
+            Application.RunAsync(
+                    organizations, 
+                    githubLogin, 
+                    githubPassword,
+                    includePrivateRepositories, 
+                    includeUngroupedRepositories)
+                .Wait();
         }
     }
 }
